@@ -18,7 +18,8 @@ public class Authors {
     public Authors () {}
 
     public Authors( AuthorsData authorsData, Book book){
-        this.name = authorsData.name();
+        String[] author = authorsData.name().split(",");
+        this.name = author[1] + " " + author[0];
         this.birth_year = authorsData.birth_year();
         this.death_year = authorsData.death_year();
         this.book = book;
@@ -67,10 +68,6 @@ public class Authors {
     @Override
     public String toString() {
         return
-                "Autores=" + name +
-                        ", Ano de nascimento=" + birth_year +
-                        ", Ano do falecimento=" + death_year;
+               name;
     }
-
-
 }

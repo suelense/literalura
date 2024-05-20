@@ -1,6 +1,5 @@
 package br.com.alura.literalura.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -12,20 +11,22 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String title;
     private String[] languages;
-    private Integer download_count;
+    private Integer downloadCount;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Authors> authors = new ArrayList<>();
 
-    public Book() {
-    }
+    public Book() {}
 
     public Book(BookData bookData) {
         this.title = bookData.title();
         this.languages = bookData.languages();
-        this.download_count = bookData.download_count();
+        this.downloadCount = bookData.download_count();
+        List<AuthorsData> authorsData = bookData.authors().stream().toList();
+        authorsData.forEach(a -> authors.add(new Authors(a,this)));
     }
 
     public Long getId() {
@@ -48,12 +49,16 @@ public class Book {
         return languages;
     }
 
-    public Integer getDownload_count() {
-        return download_count;
+    public void setLanguages(String[] languages) {
+        this.languages = languages;
     }
 
-    public void setDownload_count(Integer download_count) {
-        this.download_count = download_count;
+    public Integer getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(Integer downloadCount) {
+        this.downloadCount = downloadCount;
     }
 
     public List<Authors> getAuthors() {
@@ -69,8 +74,20 @@ public class Book {
     public String toString() {
     return
             "Titulo= " + title +
-                    ", Autores= '" + authors +
-                    ", Idioma= " + languages +
-                    ", Total de Downloads= " + download_count + '\n';
+                    ", Autores= " + authorsName()+
+                    " Idioma= " + languages[0] +
+                    ", Total de Downloads= " + downloadCount;
     }
+
+    private String authorsName() {
+        StringBuilder authorsName = new StringBuilder();
+        for (Authors a : authors) {
+            authorsName.append(a.getName()).append(", ");
+        }
+        return authorsName.toString();
+    }
+
+
+
+
 }
