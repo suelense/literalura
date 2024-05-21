@@ -15,6 +15,7 @@ public class Book {
     private String title;
     private String[] languages;
     private Integer downloadCount;
+    private String image;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Authors> authors = new ArrayList<>();
@@ -27,6 +28,7 @@ public class Book {
         this.downloadCount = bookData.download_count();
         List<AuthorsData> authorsData = bookData.authors().stream().toList();
         authorsData.forEach(a -> authors.add(new Authors(a,this)));
+        this.image = bookData.formats().get("image/jpeg");
     }
 
     public Long getId() {
@@ -88,6 +90,11 @@ public class Book {
     }
 
 
+    public String getImage() {
+        return image;
+    }
 
-
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
